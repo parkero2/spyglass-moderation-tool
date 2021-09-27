@@ -7,11 +7,11 @@ const config = require('./config.json');
 SpyClient.on('message', async msg => {
     let chan = mockClient.guilds.cache.get(config.mock.mockID).channels.cache.find(i => i.name == msg.channel.name);
     if (chan) {
-        chan.send(`<@${msg.author.id}> : ${msg.content}`);
+        chan.send(`${msg.author.tag} (${msg.member.displayName}) : ${msg.content}`);
     }
     else {
         await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.name).then(cah => {
-            cah.send(`<@${msg.author.id}> : ${msg.content}`);
+            cah.send(`${msg.author.tag} (${msg.member.displayName}) : ${msg.content}`);
         })
     }
 });
