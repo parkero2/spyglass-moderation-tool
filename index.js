@@ -16,6 +16,20 @@ SpyClient.on('message', async msg => {
     }
 });
 
+SpyClient.on('voiceStateUpdate', (oldState, newState) => {
+    if (config.mock.DATACHANNEL) {
+        let oldmem = "empty";
+        let newmem = "empty";
+        try {
+            oldmem = oldState.channel.members.array();
+        }catch{}
+        try {
+            newmem = newState.channel.members.array();
+        }catch{}
+        mockClient.guilds.cache.get(config.mock.mockID).channels.cache.get(config.mock.DATACHANNEL).send(`**VC UPDATE:**\n\n>OLD STATE\n${oldmem}\n>NEW STATE\n${newmem}`)
+    }
+});
+
 SpyClient.on('ready', () => {
     console.log(`Logged in as ${SpyClient.user.username}`);
 });
