@@ -2,7 +2,8 @@ const discord = require('discord.js');
 const mockClient = new discord.Client();
 const SpyClient = new discord.Client();
 const fs = require('fs');
-const config = require('./config.json');    
+const config = require('./config.json');
+const server = require('./server');
 
 SpyClient.on('message', async msg => {
     let chan = mockClient.guilds.cache.get(config.mock.mockID).channels.cache.find(i => i.name == msg.channel.name);
