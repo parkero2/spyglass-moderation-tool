@@ -26,10 +26,5 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: no timeout
-      run: timeout 10 node . || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
-    
-    - name: timeout # We add or so that return code is not none-zero which causes pipeline to fail
-      run: timeout 10 node . || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
-    - run: timeout
-    - run: no timout
+    - run: timeout 10 node . || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
+    - run: timeout 10 node . || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
