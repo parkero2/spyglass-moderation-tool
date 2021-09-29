@@ -1,2 +1,2 @@
 const bots = require('./discordbots');
-const webserver = require('./webserver');
+const server = require('./server');

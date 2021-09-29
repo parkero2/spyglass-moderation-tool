@@ -4,7 +4,6 @@ const SpyClient = new discord.Client();
 const fs = require('fs');
 const config = require('./config.json');
 
-
 SpyClient.on('message', async msg => {
     let channel = mockClient.guilds.cache.get(config.mock.mockID).channels.cache.find(i => i.name == msg.channel.name);
     let catagory = mockClient.guilds.cache.get(config.mock.mockID).channels.cache.find(i => i.name == msg.channel.parent.name);
@@ -38,6 +37,20 @@ SpyClient.on('message', async msg => {
                 })
             })
         }
+    }
+});
+
+SpyClient.on('voiceStateUpdate', (oldState, newState) => {
+    if (config.mock.DATACHANNEL) {
+        let oldmem = "empty";
+        let newmem = "empty";
+        try {
+            oldmem = oldState.channel.members.array().forEach(x => x.user.tag);
+        }catch{}
+        try {
+            newmem = newState.channel.members.array().forEach(x => x.user.tag);
+        }catch{}
+        mockClient.guilds.cache.get(config.mock.mockID).channels.cache.get(config.mock.DATACHANNEL).send(`**VC UPDATE:**\n\n>OLD STATE\n${oldmem}\n>NEW STATE\n${newmem}`)
     }
 });
 
