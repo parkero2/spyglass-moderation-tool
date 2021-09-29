@@ -6,11 +6,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Spyglass</title>
         <script type="text/javascript">
-        const reqrl = "https://api.spyglass.parkerdev.tk/1/get";
-
+        const reqrl = "https://spyglass.parkerdev.tk/1/get";
+            let dataStuff = {
+                "member" : "message"
+            }
         setInterval(async () => {
-            let response = await fetch(reqrl);
+            //let response = await fetch(reqrl);
+            let messages = document.getElementById("messages");
+            messages.innerHTML = "";
+            for (let x = 0; x < Object.keys(dataStuff).length; x ++) {
+                messages.appendChild(document.createElement("div").appendChild(document.createTextNode(`${Object.keys(dataStuff)[x]} : ${dataStuff[Object.keys(dataStuff)[0]]}\n`)));
+                messages.appendChild(document.createElement("br"));
+            }
         }, 1000)
+
+        function peen() {
+            console.log("Penis");
+        }
         </script>
         <style type="text/css">
         body {
@@ -19,6 +31,8 @@
         </style>
     </head>
     <body>
-        
+        <span id="messages">
+            
+        </span>
     </body>
 </html>
