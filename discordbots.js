@@ -18,8 +18,8 @@ SpyClient.on('message', async msg => {
             channel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
         } else {
             // If the Channel exists but the Catagory does NOT Exist, Do This:
-            await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.parent.name, { type: 'category' }).then(NewCatagory => {
-                channel.setParent(NewCatagory)
+            await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.parent.name, { type: 'category' }).then(newCat => {
+                channel.setParent(newCat)
                 channel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
             })
         }
@@ -27,16 +27,16 @@ SpyClient.on('message', async msg => {
         // If Channel Does NOT Exist, Do This:
         if (catagory) {
             // If the Channel Does NOT Exist but the Catagory DOES exist, Do This:
-            await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.name).then(NewChannel => {
-                NewChannel.setParent(catagory)
-                Newchannel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
+            await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.name).then(newchan => {
+                newchan.setParent(catagory)
+                newchan.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
             })
         } else {
             // If the Channel Does NOT Exist AND the Catagory Does NOT Exist, Do This:
-            await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.name).then(NewChannel => {
-                Newchannel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
-                mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.parent.name, { type: 'category' }).then(NewCatagory => {
-                    NewChannel.setParent(NewCatagory);
+            await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.name).then(newchan => {
+                newchan.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
+                mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.parent.name, { type: 'category' }).then(newCat => {
+                    newchan.setParent(newCat);
                 })
             })
         }
@@ -62,7 +62,7 @@ SpyClient.on('ready', () => {
 });
 
 mockClient.on('ready', () => {
-    console.log(`Logged in as ${mockClient.user.username}`);
+    console.log(`Logged in as ${mockClient.user.username}`);    
 });
 
 module.exports = {
