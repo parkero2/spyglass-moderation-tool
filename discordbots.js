@@ -4,6 +4,8 @@ const SpyClient = new discord.Client();
 const fs = require('fs');
 const config = require('./config.json');
 
+const data = [];
+
 SpyClient.on('message', async msg => {
     if (Object.keys(data).length >= 50) {
         //Append data the the array then remove the data and index 0; collect data from the end of the array or reverse in the web interface
@@ -45,15 +47,27 @@ SpyClient.on('message', async msg => {
 
 SpyClient.on('voiceStateUpdate', (oldState, newState) => {
     if (config.mock.DATACHANNEL) {
-        let oldmem = "empty";
-        let newmem = "empty";
+        let channelInfo = [];
         try {
-            oldmem = oldState.channel.members.array().forEach(x => x.user.tag);
+            for (let i of oldState.channel.members.array()) {
+                channelInfo.push(i.user.tag);
+                channelInfo.push('\n');
+            }
         }catch{}
         try {
-            newmem = newState.channel.members.array().forEach(x => x.user.tag);
+            for (let i of newState.channel.members.array()) {
+                channelInfo.push(i.user.tag);
+                channelInfo.push('\n');
+            }
         }catch{}
-        mockClient.guilds.cache.get(config.mock.mockID).channels.cache.get(config.mock.DATACHANNEL).send(`**VC UPDATE:**\n\n>OLD STATE\n${oldmem}\n>NEW STATE\n${newmem}`)
+        let cName = null;
+        try {
+            cName = oldState.channel.name;
+        }
+        catch {
+            cName = newState.channel.name;
+        }
+        mockClient.guilds.cache.get(config.mock.mockID).channels.cache.get(config.mock.DATACHANNEL).send(`**VC UPDATE:**\nChannel name: ${cName}\nServer: ${oldState.guild.name}\n\n**Members in channel**\n${channelInfo.join("")}`);
     }
 });
 
