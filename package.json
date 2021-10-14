@@ -1,0 +1,25 @@
+{
+  "name": "spyglass",
+  "version": "1.0.0",
+  "description": "[![Node.js CI](https://github.com/parkero2/spyglass/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/parkero2/spyglass/actions/workflows/node.js.yml)",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "node": "^16.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node ./gitHubTest.js",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/parkero2/spyglass.git"
+  },
+  "author": "GlaxayFlight, Parkero2",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/parkero2/spyglass/issues"
+  },
+  "homepage": "https://github.com/parkero2/spyglass#readme"
+}
