@@ -1,2 +1,3 @@
 # spyglass
-[![Node.js CI](https://github.com/parkero2/spyglass/actions/workflows/fullTest.yml/badge.svg)](https://github.com/parkero2/spyglass/actions/workflows/fullTest.yml)
+[![FullSystemTest](https://github.com/parkero2/spyglass/actions/workflows/fullTest.yml/badge.svg?branch=main)](https://github.com/parkero2/spyglass/actions/workflows/fullTest.yml)
+[![Discord]()https://discord.gg/VxMm96h6]
