@@ -7,36 +7,42 @@ const config = require('./config.json');
 const data = [];
 
 SpyClient.on('message', async msg => {
+    let attachmentsURLS = [];
     if (Object.keys(data).length >= 50) {
         //Append data the the array then remove the data and index 0; collect data from the end of the array or reverse in the web interface
     }
     let channel = mockClient.guilds.cache.get(config.mock.mockID).channels.cache.find(i => i.name == msg.channel.name);
     let catagory = mockClient.guilds.cache.get(config.mock.mockID).channels.cache.find(i => i.name == msg.channel.parent.name);
+    if (msg.attachments) {
+        for (let x of msg.attachments.array()) {
+            attachmentsURLS.push(x.url);
+            attachmentsURLS.push(" (**TYPE: ATTACHMENT**) \n")
+        }
+    }
     if (channel) {
         // If Channel Exists, Do This:
         if (catagory) {
             // If The Channel AND The Catagory Exist, Do This:
             channel.setParent(catagory)
-            channel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
         } else {
             // If the Channel exists but the Catagory does NOT Exist, Do This:
             await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.parent.name, { type: 'category' }).then(newCat => {
                 channel.setParent(newCat)
-                channel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
             })
         }
+        channel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}\n${attachmentsURLS.join("") || ""}`);
     } else {
         // If Channel Does NOT Exist, Do This:
         if (catagory) {
             // If the Channel Does NOT Exist but the Catagory DOES exist, Do This:
             await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.name).then(newchan => {
                 newchan.setParent(catagory)
-                newchan.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
+                newchan.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}\n${attachmentsURLS.join("") || ""}`)
             })
         } else {
             // If the Channel Does NOT Exist AND the Catagory Does NOT Exist, Do This:
             await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.name).then(newchan => {
-                newchan.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}`)
+                newchan.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}\n${attachmentsURLS.join("") || ""}`)
                 mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.parent.name, { type: 'category' }).then(newCat => {
                     newchan.setParent(newCat);
                 })
