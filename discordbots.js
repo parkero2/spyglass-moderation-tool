@@ -31,7 +31,7 @@ SpyClient.on('message', async msg => {
                 channel.setParent(newCat)
             })
         }
-        if (msg.embeds) {
+        if (msg.embeds.length > 0) {
             channel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}\n${attachmentsURLS.join("") || ""}\n (**TYPE: EMBED**)`);
             for (let x of msg.embeds) {
                 channel.send(x);
