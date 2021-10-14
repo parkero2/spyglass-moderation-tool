@@ -8,6 +8,7 @@ const data = [];
 
 SpyClient.on('message', async msg => {
     let attachmentsURLS = [];
+    let messageEmbeds = [];
     if (Object.keys(data).length >= 50) {
         //Append data the the array then remove the data and index 0; collect data from the end of the array or reverse in the web interface
     }
@@ -29,6 +30,13 @@ SpyClient.on('message', async msg => {
             await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.parent.name, { type: 'category' }).then(newCat => {
                 channel.setParent(newCat)
             })
+        }
+        if (msg.embeds) {
+            channel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}\n${attachmentsURLS.join("") || ""}\n (**TYPE: EMBED**)`);
+            for (let x of msg.embeds) {
+                channel.send(x);
+            }
+            return true
         }
         channel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}\n${attachmentsURLS.join("") || ""}`);
     } else {
