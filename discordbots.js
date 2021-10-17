@@ -61,17 +61,18 @@ SpyClient.on('message', async msg => {
 
 SpyClient.on('voiceStateUpdate', (oldState, newState) => {
     if (config.mock.DATACHANNEL) {
-        let channelInfo = [];
+        let channelInfoOld = [];
+        let channelInfoNew = [];
         try {
             for (let i of oldState.channel.members.array()) {
-                channelInfo.push(i.user.tag);
-                channelInfo.push('\n');
+                channelInfoOld.push(i.user.tag);
+                channelInfoOld.push('\n');
             }
         }catch{}
         try {
             for (let i of newState.channel.members.array()) {
-                channelInfo.push(i.user.tag);
-                channelInfo.push('\n');
+                channelInfoNew.push(i.user.tag);
+                channelInfoNew.push('\n');
             }
         }catch{}
         let cName = null;
@@ -81,7 +82,12 @@ SpyClient.on('voiceStateUpdate', (oldState, newState) => {
         catch {
             cName = newState.channel.name;
         }
-        mockClient.guilds.cache.get(config.mock.mockID).channels.cache.get(config.mock.DATACHANNEL).send(`**VC UPDATE:**\nChannel name: ${cName}\nServer: ${oldState.guild.name}\n\n**Members in channel**\n${channelInfo.join("")}`);
+        if (channelInfoNew.length > channelInfoOld.length) {
+            mockClient.guilds.cache.get(config.mock.mockID).channels.cache.get(config.mock.DATACHANNEL).send(`**VC UPDATE:**\nChannel name: ${cName}\nServer: ${oldState.guild.name}\n\n**Members in channel**\n${channelInfoNew.join("")}`);
+        }
+        else {
+            mockClient.guilds.cache.get(config.mock.mockID).channels.cache.get(config.mock.DATACHANNEL).send(`**VC UPDATE:**\nChannel name: ${cName}\nServer: ${oldState.guild.name}\n\n**Members in channel**\n${channelInfoOld.join("")}`);
+        }
     }
 });
 
