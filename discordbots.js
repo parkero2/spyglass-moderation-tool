@@ -4,7 +4,7 @@ const SpyClient = new discord.Client();
 const fs = require('fs');
 const config = require('./config.json');
 
-const data = [];
+const data = {};
 
 SpyClient.on('message', async msg => {
     let attachmentsURLS = [];
