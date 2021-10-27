@@ -4,7 +4,7 @@ const SpyClient = new discord.Client();
 const fs = require('fs');
 const config = require('./config.json');
 
-const data = [];
+const data = {};
 
 SpyClient.on('message', async msg => {
     let attachmentsURLS = [];
@@ -17,11 +17,17 @@ SpyClient.on('message', async msg => {
     if (msg.attachments) {
         for (let x of msg.attachments.array()) {
             attachmentsURLS.push(x.url);
+            if (x.spoiler) {
+                attachmentsURLS.push(" (**TYPE: SPOILER**) ")
+            }
             attachmentsURLS.push(" (**TYPE: ATTACHMENT**) \n")
         }
     }
     if (channel) {
         // If Channel Exists, Do This:
+        if (msg.channel.nsfw != channel.nsfw) {
+            channel.setNSFW(msg.channel.nsfw);
+        }
         if (catagory) {
             // If The Channel AND The Catagory Exist, Do This:
             channel.setParent(catagory)
