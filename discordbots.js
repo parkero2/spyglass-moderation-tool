@@ -26,7 +26,7 @@ SpyClient.on('message', async msg => {
     if (channel) {
         // If Channel Exists, Do This:
         if (msg.channel.nsfw != channel.nsfw) {
-            channel.setNsfw(true);
+            channel.setNSFW(msg.channel.nsfw);
         }
         if (catagory) {
             // If The Channel AND The Catagory Exist, Do This:
