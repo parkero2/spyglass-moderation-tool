@@ -17,11 +17,17 @@ SpyClient.on('message', async msg => {
     if (msg.attachments) {
         for (let x of msg.attachments.array()) {
             attachmentsURLS.push(x.url);
+            if (x.spoiler) {
+                attachmentsURLS.push(" (**TYPE: SPOILER**) ")
+            }
             attachmentsURLS.push(" (**TYPE: ATTACHMENT**) \n")
         }
     }
     if (channel) {
         // If Channel Exists, Do This:
+        if (msg.channel.nsfw != channel.nsfw) {
+            channel.setNsfw(true);
+        }
         if (catagory) {
             // If The Channel AND The Catagory Exist, Do This:
             channel.setParent(catagory)
