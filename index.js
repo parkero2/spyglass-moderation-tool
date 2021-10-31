@@ -1,2 +1,2 @@
-require('./discordbots');
-require('./server');
+require('./backend/discordbots');
+require('./backend/server');

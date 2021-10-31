@@ -2,13 +2,12 @@ const discord = require('discord.js');
 const mockClient = new discord.Client();
 const SpyClient = new discord.Client();
 const fs = require('fs');
-const config = require('./config.json');
+const config = require('./src/config.json');
 
 const data = {};
 
 SpyClient.on('message', async msg => {
     let attachmentsURLS = [];
-    let messageEmbeds = [];
     if (Object.keys(data).length >= 50) {
         //Append data the the array then remove the data and index 0; collect data from the end of the array or reverse in the web interface
     }
