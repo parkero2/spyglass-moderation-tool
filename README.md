@@ -20,7 +20,7 @@ You will need:
 - [A Discord bot token](https://discord.com/developers/applications)
 
 ## Setup
-1) Download the ZIP file and extract the contents.
+1) Clone the repository or download the ZIP file and extract the contents.
 2) Open a command window/terminal from within the unzipped directory and run `npm i` to install the dependancies.
 3) Open the [config.json](/config.json) and enter your spy bot token (the monitoring bot token) and the mock client token (the delivery bot token - can be the same as the spy client)
 4) Assign server IDs to the `spyID` and `mockID` values in [config.json](/config.json). These should reflect the servers that your bot(s) are monitoring and logging.
