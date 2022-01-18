@@ -1,5 +1,6 @@
 # spyglass
-[![FullSystemTest](https://github.com/parkero2/spyglass/actions/workflows/fullTest.yml/badge.svg?branch=main)](https://github.com/parkero2/spyglass/actions/workflows/fullTest.yml)
+[![FullSystemTest](https://github.com/parkero2/spyglass/actions/workflows/fullTest.yml/badge.svg?branch=main)](https://github.com/parkero2/spyglass/actions/workflows/fullTest.yml) 
+This is no longer relivant as the tokens have been changed
 
 # Info
 Spyglass can serve a large range of pourposes. But officially, it is a **MODERATION TOOL**. The whole thing relies on atleast one bot. When a message or voice channel event is recieved by the 'spy client' (the monitoring bot), the event will be replicated in the output server.
