@@ -28,6 +28,11 @@ You will need:
 5) Add a logging channel for the mock client (delivery bot) to log voice channel interactions.
 6) In your command/terminal window, run `node .` to begin running the bot
 
+## Upcoming changes
+- Discord configuration editor (toggle features) 
+- Voice channel audio logging
+- **possible** deleted messages from the spy server may be crossed out (messages older than 2 weeks probably won't be applicable) 
+
 A huge thanks to [@GalaxyFlight](https://github.com/galaxyflight) for helping out with this. 
 
 If you find a bug, feel free to report it in the [issues](https://github.com/parkero2/spyglass/issues) tab.
