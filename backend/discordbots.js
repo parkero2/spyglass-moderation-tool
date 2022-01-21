@@ -96,13 +96,57 @@ SpyClient.on('voiceStateUpdate', (oldState, newState) => {
     }
 });
 
-SpyClient.on('ready', () => {
-    console.log(`Logged in as ${SpyClient.user.username}`);
-});
+mockClient.on('message', msg => {
+    if (msg.content.toUpperCase().startsWith("CONFIG")) {
+        //The config command has been called
+        if (msg.member.hasPermission("ADMINISTRATOR")) {
+            //Authorise config file updates
+            if (config[msg.content.split(" ")[1]] && !msg.content.toUpperCase().includes("TOKEN")) {
+                //Check that the value exists and that it does not contain a token
+                if (msg.content.split(" ")[1].toUpperCase().startsWith("CONFIG.")) {
+                    config[msg.content.split(" ")[1]] = Boolean(config[msg.content.split(" ")[2]])
+                }
+                else {
+                    config[msg.content.split(" ")[1]] = config[msg.content.split(" ")[2]]
+                }
+                fs.writeFile('./config.json', JSON.stringify(config, null, 2), function (err) {
+                    if (err) {
+                        console.log(err)
+                        msg.channel.send("Failed to save config file.")
+                        return false;
+                    }
+                    msg.channel.send("Configuration saved. The software must be restarted to take effect.")
+                    return true;
+                });
+            }
+            else {
+                msg.channel.send("The configuration option selected does not exist or you have entered a token. The devs highly recommend deleting the message if you sent a token. Correct formatting is `CONFIG [option] [value]`")
+            }
+        }
+        else {
+            msg.channel.send("You need admin permissions in the current guild to complete this command.")
+        }
+    }
+})
 
-mockClient.on('ready', () => {
-    console.log(`Logged in as ${mockClient.user.username}`);    
-});
+try {
+    SpyClient.on('ready', () => {
+        console.log(`Logged in as ${SpyClient.user.username}`);
+    });
+} catch {
+    console.log("Spy client failed to login. Please ensure the token is correct in the config.json file. For security reasons, this cannot be edited from Discord.")
+    process.exit(0)
+}
+
+try {
+    mockClient.on('ready', () => {
+        console.log(`Logged in as ${mockClient.user.username}`);    
+    });
+}
+catch {
+    console.log("Mock client failed to login. Please ensure the token is correct in the config.json file. For security reasons, this cannot be edited from Discord.")
+    process.exit(0)
+}
 
 module.exports = {
     data : {}
