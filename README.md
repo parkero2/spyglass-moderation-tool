@@ -32,6 +32,7 @@ You will need:
 - Discord configuration editor (toggle features) 
 - Voice channel audio logging
 - **possible** deleted messages from the spy server may be crossed out (messages older than 2 weeks probably won't be applicable) 
+- Ordering if channels and their categories
 
 A huge thanks to [@GalaxyFlight](https://github.com/galaxyflight) for helping out with this. 
 
