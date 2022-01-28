@@ -109,5 +109,5 @@ module.exports = {
     data : {}
 }
 
-mockClient.login(config.mock.mocktoken); //Server you want to forward to
+cloneClient.login(config.clone.clonetoken); //Server you want to forward to
 SpyClient.login(config.spy.spytoken); //The server you want to see
