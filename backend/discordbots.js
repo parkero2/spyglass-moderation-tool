@@ -2,9 +2,35 @@ const discord = require('discord.js');
 const mockClient = new discord.Client();
 const SpyClient = new discord.Client();
 const fs = require('fs');
-const config = require('./src/config.json');
+const { Worker } = require('worker_threads'); //Allow threadding, required for voicelogs
+const { workerData, parentPort, threadId } = require('worker_threads');
+const ffmpeg = require('ffmpeg');
+
+var config = require('./src/config.json');
 
 const data = {};
+
+//I promise to refractor the code soon
+
+//This will manage a thread or something I think. I stole it from stack overflow.
+const startVoiceLoggingService = WDat => {
+    return new Promise((resolve, reject) => {
+        const worker = new Worker('', { WDat });
+        worker.on('message', resolve);
+        worker.on('error', reject);
+        worker.on('exit', code => code !== 0 && reject(new Error(`Worker stopped with 
+        exit code ${code}`)));
+    })
+}
+
+function voiceLoggingService(voice) {
+    parentPort.postMessage(`Started voice logging service in channel ${voice.channel.name}.`)
+}
+
+function recordVoice(voice) {
+    
+}
+
 
 SpyClient.on('message', async msg => {
     let attachmentsURLS = [];
@@ -43,6 +69,17 @@ SpyClient.on('message', async msg => {
             }
             return true
         }
+        let memb = new discord.MessageEmbed();
+        memb.setAuthor(msg.author.tag, msg.author.avatarURL())
+        memb.setFooter(msg.id)
+        memb.setTimestamp(new Date())
+        mockClient.guilds.cache.get().channels.cache.get().me
+        let repliedto = msg.reference.messageID
+        let h = mockClient.guilds.cache.get(config.mock.mockID).channels.cache.get(config.mock.IDLogging).fetchMessages()
+        console.log(h)
+        channel.send(memb).then(mess => {
+            mockClient.channels.cache.get(config.mock.IDLogging).send(msg.id+":"+mess.url)
+        })
         channel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}\n${attachmentsURLS.join("") || ""}`);
     } else {
         // If Channel Does NOT Exist, Do This:
@@ -50,6 +87,7 @@ SpyClient.on('message', async msg => {
             // If the Channel Does NOT Exist but the Catagory DOES exist, Do This:
             await mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.name).then(newchan => {
                 newchan.setParent(catagory)
+                newchan.setTopic(msg.channel.topic) //To log the ID of channel in the event of a rename
                 newchan.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}\n${attachmentsURLS.join("") || ""}`)
             })
         } else {
@@ -58,6 +96,7 @@ SpyClient.on('message', async msg => {
                 newchan.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}\n${attachmentsURLS.join("") || ""}`)
                 mockClient.guilds.cache.get(config.mock.mockID).channels.create(msg.channel.parent.name, { type: 'category' }).then(newCat => {
                     newchan.setParent(newCat);
+                    newchan.setTopic(msg.channel.topic)
                 })
             })
         }
@@ -94,28 +133,33 @@ SpyClient.on('voiceStateUpdate', (oldState, newState) => {
             mockClient.guilds.cache.get(config.mock.mockID).channels.cache.get(config.mock.DATACHANNEL).send(`**VC UPDATE:**\nChannel name: ${cName}\nServer: ${oldState.guild.name}\n\n**Members in channel**\n${channelInfoOld.join("")}`);
         }
     }
+    if (config.config.voicelogs && newState.member.id == SpyClient.user.id && SpyClient.guilds.cache.get(config.spy.spyID).me.voice.channel) {
+        //Spy client has joined vc and the voicelogging feature is enabled
+        recordVoice(SpyClient.guilds.cache.get(config.spy.spyID).me.voice.channel)
+    }
 });
 
 mockClient.on('message', msg => {
-    if (msg.content.toUpperCase().startsWith("CONFIG")) {
+    /**if (msg.content.toUpperCase().startsWith("CONFIG")) {
+        console.log(Boolean(msg.content.split(" ")[2]))
         //The config command has been called
-        if (msg.member.hasPermission("ADMINISTRATOR")) {
+        if (msg.member.hasPermission("ADMINISTRATOR") && !msg.author.bot) {
             //Authorise config file updates
             if (config[msg.content.split(" ")[1]] && !msg.content.toUpperCase().includes("TOKEN")) {
                 //Check that the value exists and that it does not contain a token
                 if (msg.content.split(" ")[1].toUpperCase().startsWith("CONFIG.")) {
-                    config[msg.content.split(" ")[1]] = Boolean(config[msg.content.split(" ")[2]])
+                    config["config"][msg.content.split(" ")[1].split(".")[1]] = Boolean(msg.content.split(" ")[2])
                 }
                 else {
-                    config[msg.content.split(" ")[1]] = config[msg.content.split(" ")[2]]
+                    config[msg.content.split(" ")[1].split(".")[0]][msg.content.split(" ")[1].split(".")[1]] = msg.content.split(" ")[2]
                 }
-                fs.writeFile('./config.json', JSON.stringify(config, null, 2), function (err) {
+                fs.writeFile('./backend/src/config.json', JSON.stringify(config, null, 2), function (err) {
                     if (err) {
                         console.log(err)
                         msg.channel.send("Failed to save config file.")
                         return false;
                     }
-                    msg.channel.send("Configuration saved. The software must be restarted to take effect.")
+                    msg.channel.send("Configuration saved. The software may need to be restarted to take effect.")
                     return true;
                 });
             }
@@ -126,7 +170,7 @@ mockClient.on('message', msg => {
         else {
             msg.channel.send("You need admin permissions in the current guild to complete this command.")
         }
-    }
+    }*/ //In progress
 })
 
 try {
@@ -141,6 +185,21 @@ try {
 try {
     mockClient.on('ready', () => {
         console.log(`Logged in as ${mockClient.user.username}`);    
+        if(!config.mock.IDLogging) {
+            console.log("No ID logging channel found. Creating one.")
+            mockClient.guilds.cache.get(config.mock.mockID).channels.create("MessageIDLogs").then(channelCreated => {
+                config.mock.IDLogging = channelCreated.id;
+                fs.writeFile('./backend/src/config.json', JSON.stringify(config, null, 2), function (err) {
+                    if (err) {
+                        console.log(err)
+                        console.log("Error updating the configuration file.")
+                        return false;
+                    }
+                    console.log("Updated the configuration file.")
+                    return true;
+                });
+            })
+        }
     });
 }
 catch {

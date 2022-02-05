@@ -5,9 +5,9 @@
   "main": "index.js",
   "dependencies": {
     "discord.js": "^12.5.3",
+    "ffmpeg": "^0.0.4",
     "node": "^16.3.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "node ./gitHubTest.js",
     "start": "node ."

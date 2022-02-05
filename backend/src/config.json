@@ -1,15 +1,17 @@
-{ 
-    "mock"  : {
-        "mocktoken" : "ODkxOTUwMTMzOTM4MzY4NTUz.YVFzSw.gbq7-V6YdqSu5y6lLIKxNRS4hBY",
-        "mockID" : "848085474530689024",
-        "DATACHANNEL" : "891966064408268831"
-    },
-    "spy" : {
-        "spytoken" : "ODE2ODY0Mjc2MDU2NTA2Mzc4.YEBKJA.GjPR3bwFCxbUlyoUyX7Z0r3dy4c",
-        "spyID" : "688662247274184728"
-    },
-    "config" : {
-        "voicelogs" : false,
-        "deletedMessage" : false
-    }
+{
+  "mock": {
+    "mocktoken": "NzU3NTI3NDA3NTIyNjExMjU0.X2hsYA.JKCKZwPLxvu7HazqrKsWoglQptU",
+    "mockID": "737882648231411722",
+    "DATACHANNEL": "838015397948817438",
+    "ClipFrequency": "600",
+    "IDLogging": "939307053321699328"
+  },
+  "spy": {
+    "spytoken": "ODc2NTk4NDI5MTgxMTY1NjIw.YRmZ5w.y0i0NUMUrlb-mdP9YIVkzmqD7JY",
+    "spyID": "868725826449965056"
+  },
+  "config": {
+    "voicelogs": false,
+    "deletedMessage": false
+  }
 }
