@@ -73,13 +73,12 @@ SpyClient.on('message', async msg => {
         memb.setAuthor(msg.author.tag, msg.author.avatarURL())
         memb.setFooter(msg.id)
         memb.setTimestamp(new Date())
-        mockClient.guilds.cache.get().channels.cache.get().me
-        let repliedto = msg.reference.messageID
-        let h = mockClient.guilds.cache.get(config.mock.mockID).channels.cache.get(config.mock.IDLogging).fetchMessages()
-        console.log(h)
+        
+        let jo = new discord.MessageManager(mockClient.channels.cache.get(config.mock.IDLogging))
+        /**let repliedto = msg.reference.messageID
         channel.send(memb).then(mess => {
             mockClient.channels.cache.get(config.mock.IDLogging).send(msg.id+":"+mess.url)
-        })
+        })*/
         channel.send(`${msg.author}  (${msg.author.tag}) : ${msg.content}\n${attachmentsURLS.join("") || ""}`);
     } else {
         // If Channel Does NOT Exist, Do This:
